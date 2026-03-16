@@ -1,0 +1,34 @@
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# Build-System & Binaries
+build/
+bin/
+out/
+CMakeUserPresets.json
+*.exe
+*.o
+*.a
+
+# Zertifikate (Sicherheit geht vor!)
+# Wir erlauben das Hochladen der Root-CA (Public), damit Clients validieren können.
+# Aber wir verbieten absolut alle Private Keys und Client/Server-Zertifikate.
+*.key
+*.pem
+!rootCA.pem
+
+# Logs & Temporäres
+docu/
+history/
+*.log
+sorted_logs.txt
+raw_logs.txt
+
+# Docker
+.dockerignore
+
+# OS-spezifisch
+Thumbs.db
+.DS_Store

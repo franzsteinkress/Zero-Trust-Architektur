@@ -1,0 +1,37 @@
+services:
+  # Unser mTLS Server
+  zt_server:
+    build: . # Baut das Image automatisch, falls nicht vorhanden
+    image: zta-app:latest
+    container_name: zt_server
+    # Der Befehl, der beim Start ausgeführt wird
+    command: ["server"]
+    # Port-Mapping, damit du auch von Windows aus testen könntest
+    ports:
+      - "8443:8443"
+    environment:
+      - CERT_PATH=/app/bin/certs
+    volumes:
+      - ./bin/certs:/app/bin/certs:ro  # Zertifikate spiegeln
+    networks:
+      - zt_network
+
+  # Unser mTLS Client
+  zt_client:
+    image: zta-app:latest
+    container_name: zt_client
+    # WICHTIG: "zt_server" ist der DNS-Name innerhalb von Docker
+    command: ["client", "zt_server", "8443"]
+    # Der Client wartet, bis der Server-Container gestartet ist
+    depends_on:
+      - zt_server
+    environment:
+      - CERT_PATH=/app/bin/certs
+    volumes:
+      - ./bin/certs:/app/bin/certs:ro  # Zertifikate spiegeln
+    networks:
+      - zt_network
+
+networks:
+  zt_network:
+    driver: bridge
