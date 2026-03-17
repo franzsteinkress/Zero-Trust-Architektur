@@ -47,7 +47,6 @@ asio::awaitable<void> run_mtls_client(std::string target_host) {
         // 5. Antwort empfangen
         char data[1024];
         size_t n = co_await stream.async_read_some(asio::buffer(data), asio::use_awaitable);
-        //std::cout << "\n--- Server Antwort ---\n" << std::string_view(data, n) << "\n----------------------" << std::endl;
         log_msg("CLIENT", "INFO", std::format("--- Server Antwort Start ---"));
         log_msg("CLIENT", "INFO", std::format("{}", std::string_view(data, n)));
         log_msg("CLIENT", "INFO", std::format("--- Server Antwort Ende  ---"));    

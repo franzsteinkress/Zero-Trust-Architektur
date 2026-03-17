@@ -9,13 +9,6 @@
 #include <windows.h>
 #endif
 
-// Hier kommen die Coroutine-Funktionen von oben rein (run_mtls_client & listener)
-// ... (siehe vorherige Antworten) ...
-
-// Forward Declarations: Damit main weiß, dass diese Funktionen existieren
-//boost::asio::awaitable<void> listener();
-//boost::asio::awaitable<void> run_mtls_client(std::string target_host);
-
 int main(int argc, char* argv[]) {
     #ifdef _WIN32
     // Setzt die Konsole auf UTF-8 (Code Page 65001)

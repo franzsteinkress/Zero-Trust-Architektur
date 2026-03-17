@@ -1,7 +1,6 @@
 #ifndef SHARED_HPP
 #define SHARED_HPP
 
-//#pragma once
 #include <utility>
 #include <boost/asio.hpp>
 #include <cstdint>
@@ -26,33 +25,12 @@ struct SensorPayload {
     uint64_t timestamp;
 };
 
-/*
-inline void log_msg(const std::string& component, const std::string& msg) {
-    std::cout << "[" << component << "] " << msg << std::endl;
-}
-*/
-
-/*
-inline void log_msg(const std::string& component, const std::string& level, const std::string& msg) {
-    // Format: [COMPONENT] [LEVEL] Message
-    std::cout << std::format("[{:<6}] [{:<5}] {}", component, level, msg) << std::endl;
-}
-*/
-
 inline void log_msg(const std::string& component, const std::string& level, const std::string& msg) {
     // Filtert Nachrichten, die nur aus Steuerzeichen oder Leerzeichen bestehen
     if (msg.empty() || msg.find_first_not_of(" \t\n\r") == std::string::npos) {
         return;
     }
-/*
-    // Kopiert die Nachricht und ersetzen Umbrüche
-    std::string sanitized = msg;
-    for (char& c : sanitized) {
-        if (c == '\n' || c == '\r' || c == '\t') {
-            c = ' '; // Ersetze Steuerzeichen durch ein Leerzeichen
-        }
-    }
-*/
+
     // Präziser C++20 Zeitstempel
     auto now = std::chrono::system_clock::now();
     
