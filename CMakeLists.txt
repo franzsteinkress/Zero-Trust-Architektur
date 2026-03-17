@@ -51,7 +51,7 @@ install(TARGETS mtls_app DESTINATION bin)
 
 # --- 8. Zertifikats-Generierung ---
 find_program(SHELL_PATH NAMES bash sh REQUIRED)
-
+file(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/certs")
 add_custom_command(
     OUTPUT "${CMAKE_SOURCE_DIR}/bin/certs/ca.pem"
            "${CMAKE_SOURCE_DIR}/bin/certs/server_cert.pem"

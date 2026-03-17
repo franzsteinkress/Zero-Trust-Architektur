@@ -1,43 +1,35 @@
-# --- STAGE 1: Build ---
+# --- STAGE 1: Build & Cert Generation ---
 FROM debian:trixie AS builder
-RUN apt-get update && apt-get install -y openssl bash \
-    g++ cmake libboost-system-dev libboost-thread-dev libssl-dev \
+RUN apt-get update && apt-get install -y \
+    g++ cmake libboost-system-dev libboost-thread-dev libssl-dev openssl bash \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 COPY . .
 
-# Build und Installation in einen sauberen Ordner (/app/dist)
+# 1. Zertifikate generieren (Erzeugt /app/bin/certs/*.pem)
+RUN chmod +x generate_san_certs.sh && ./generate_san_certs.sh
+
+# 2. App bauen (Erzeugt /app/bin/mtls_app laut deiner CMakeLists.txt)
 RUN cmake -B build -DCMAKE_BUILD_TYPE=Release . && \
-    cmake --build build && \
-    cmake --install build --prefix /app/dist
+    cmake --build build
 
 # --- STAGE 2: Runtime ---
 FROM debian:trixie-slim
-# Nur die notwendigen Shared Libraries installieren (kein -dev)
 RUN apt-get update && apt-get install -y \
-    libssl3 \
-    libboost-system1.83.0 \
-    libboost-thread1.83.0 \
-    libstdc++6 \
-    ca-certificates \
+    libssl3 libboost-system-dev libboost-thread-dev ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Wir kopieren NUR die fertige Binary aus dem Installations-Verzeichnis
-# CMake install legt sie nach /app/dist/bin/mtls_app
-COPY --from=builder /app/dist/bin/mtls_app ./
+# Kopiere die fertige Binary DIREKT aus dem bin-Ordner der Stage 1
+COPY --from=builder /app/bin/mtls_app ./
 
-# Zertifikate kopieren
-COPY bin/certs/*.pem ./
+# Kopiere die generierten Zertifikate DIREKT aus dem certs-Ordner
+COPY --from=builder /app/bin/certs/*.pem ./
 
 # Ausführrechte sicherstellen
 RUN chmod +x ./mtls_app
-
-# Erstelle einen dedizierten User für die App
-RUN useradd -m zerotrustuser
-USER zerotrustuser
 
 ENTRYPOINT ["./mtls_app"]
 CMD ["server"]
