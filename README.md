@@ -150,6 +150,9 @@ Ideal, wenn du die Logs analysieren willst, während die Server im Hintergrund w
    ```
 3. Nach Abschluss die Container manuell stoppen: `docker-compose stop` oder `docker-compose down`.
 
+**📊 Ergebnis:**
+Das Skript generiert die Datei `sorted_logs.txt`. Darin ist die Kommunikation zwischen Client und Server chronologisch perfekt verzahnt, von "Ghost-Logs" bereinigt und in korrektem UTF-8-Encoding aufbereitet.
+
 ---
 
 ## 📖 Dokumentation (Doxygen)
@@ -288,3 +291,54 @@ Dieses Projekt ist unter der **MIT-Lizenz** lizenziert. Siehe die [LICENSE](./LI
 ---
 
 
+
+
+
+
+
+Hier ist die aufbereitete Fassung für deine **README.md**. Ich habe die Optionen klar strukturiert und die Befehle in Code-Blöcke gesetzt, damit Nutzer sie direkt kopieren können.
+
+---
+
+#### 🚀 Anwendung & Log-Analyse
+
+Um die mTLS-Kommunikation und den Handshake im Detail zu analysieren, muss das PowerShell-Skript ausgeführt werden, während die Logs in Docker noch verfügbar sind. Hierfür gibt es zwei bewährte Wege:
+
+**Option 1: Der "Post-Mortem" Weg (Standard)**
+Dieser Weg eignet sich, wenn du den gesamten Prozess von Start bis Ende (inkl. Shutdown) analysieren möchtest.
+1. Container starten: `docker-compose up`
+2. Interaktion abwarten (mTLS Handshake & Datentransfer).
+3. Container mit `Ctrl+C` beenden.
+4. Analyse-Skript ausführen:
+   ```powershell
+   ./sort_logs.ps1
+   ```
+5. (Optional) Ressourcen vollständig entfernen: `docker-compose down`
+
+
+
+**Option 2: Der "Detached Mode" (Live-Snapshot)**
+Ideal, wenn du die Logs analysieren willst, während die Server im Hintergrund weiterlaufen.
+1. Container im Hintergrund starten:
+   ```powershell
+   docker-compose up -d
+   ```
+2. Analyse-Skript jederzeit ausführen (erzeugt einen Snapshot der aktuellen Logs):
+   ```powershell
+   ./sort_logs.ps1
+   ```
+3. Nach Abschluss die Container manuell stoppen: `docker-compose stop` oder `docker-compose down`.
+
+
+
+---
+
+**📊 Ergebnis:**
+Das Skript generiert die Datei `sorted_logs.txt`. Darin ist die Kommunikation zwischen Client und Server chronologisch perfekt verzahnt, von "Ghost-Logs" bereinigt und in korrektem UTF-8-Encoding aufbereitet.
+
+---
+
+### Ein kleiner technischer Tipp vor dem Check-in:
+Falls du dich für **Option 1** entscheidest, achte darauf, dass du nach dem `Ctrl+C` kurz wartest, bis der PowerShell-Prompt wieder erscheint, bevor du das Skript startest. So stellst du sicher, dass Docker alle Log-Buffer auf die Festplatte geschrieben hat.
+
+**Soll ich dir noch helfen, einen kurzen "Troubleshooting"-Abschnitt für die README zu schreiben, falls mal ein Port belegt ist oder Zertifikate fehlen?**
