@@ -1,3 +1,7 @@
+/**
+ * @file shared.cpp
+ * @brief Implementierung der pfad- und systemrelevanten Hilfsfunktionen.
+ */
 #include "shared.hpp"
 #include <filesystem>
 #include <cstdlib>

@@ -1,50 +1,52 @@
-## Logs ohne Farben exportieren
-#docker-compose logs --no-color > raw_logs.txt
-#
-## Zeilen einlesen, nach dem Zeitstempel (der am Zeilenanfang steht) sortieren
-## und in eine neue Datei schreiben
-#Get-Content raw_logs.txt | Sort-Object { $_ } | Set-Content sorted_logs.txt
-#
-#Write-Host "Logs wurden erfolgreich sortiert in 'sorted_logs.txt' gespeichert." -ForegroundColor Green
+<#
+@file sort_logs.ps1
+@brief Analyse-Tool für die Log-Aufbereitung.
+@details Liest Docker-Logs ein, erzwingt UTF-8 und sortiert Einträge 
+chronologisch unter Beibehaltung des Kontextes (Folgezeilen ohne Zeitstempel).
+#>
 
-## 1. Logs abrufen
-#$rawLogs = docker-compose logs --no-color
-#
-## 2. Sortieren und als UTF-8 speichern
-#$rawLogs | Sort-Object { 
-#    $idx = $_.IndexOf("["); 
-#    if($idx -ge 0) { $_.Substring($idx) } else { $_ } 
-#} | Out-File -FilePath "sorted_logs.txt" -Encoding utf8
-#
-#Write-Host "Logs wurden in UTF-8 sortiert und gespeichert." -ForegroundColor Green
+# ==============================================================================
+# sort_logs.ps1 - Zero-Trust-Architektur Log-Processor (Context-Aware)
+# ==============================================================================
 
-# 1. Logs abrufen
-$rawLogs = docker-compose logs --no-color
+$OutputEncoding = [System.Text.Encoding]::UTF8
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
-# 2. Sortieren (basierend auf deiner Zeitstempel-Klammer)
-$sortedLogs = $rawLogs | Sort-Object { 
-    $idx = $_.IndexOf("["); 
-    if($idx -ge 0) { $_.Substring($idx) } else { $_ } 
+Write-Host "--- Starte Log-Extraktion und Kontext-Sortierung ---" -ForegroundColor Cyan
+
+# 1. Logs von Docker ziehen
+$rawOutput = docker-compose logs --no-color
+
+# 2. Kontext-Verarbeitung
+Write-Host "--- Analysiere Zeitstempel-Bloecke ---" -ForegroundColor Yellow
+
+$currentTimestamp = "00:00:00.000000000"
+$processedLogs = $rawOutput | ForEach-Object {
+    $line = $_
+    
+    # Extrahiere Zeitstempel mit Regex: [HH:mm:ss.ms]
+    if ($line -match "\[(\d{2}:\d{2}:\d{2}\.\d+)\]") {
+        $currentTimestamp = $Matches[1]
+    }
+    
+    # Erstelle ein Objekt, das den Zeitstempel "mitschleppt"
+    [PSCustomObject]@{
+        SortKey = $currentTimestamp
+        Content = $line
+    }
 }
 
-# 3. Speichern in UTF-8 OHNE BOM
-# Wir erstellen ein UTF8-Objekt ohne Markierung
-$utf8NoBom = New-Object System.Text.UTF8Encoding($false)
-[System.IO.File]::WriteAllLines("$(Get-Location)\sorted_logs.txt", $sortedLogs, $utf8NoBom)
+# 3. Filtern (Leere Zeilen raus) und Sortieren
+$sortedLogs = $processedLogs | Where-Object {
+    # Filtert Zeilen, die nach dem '|' wirklich leer sind
+    $_.Content -match "\|\s*\S+"
+} | Sort-Object SortKey | ForEach-Object { $_.Content }
 
-Write-Host "Check: sorted_logs.txt ist jetzt reines UTF-8 (ohne BOM) für VS Code!" -ForegroundColor Green
+# 4. Speichern (UTF-8 ohne BOM)
+$utf8 = New-Object System.Text.UTF8Encoding($false)
+$outputPath = Join-Path (Get-Location) "sorted_logs.txt"
 
-## 1. Logs als saubere UTF8-Strings abrufen (verhindert Fehlinterpretation durch PS-Standard)
-#$rawLogs = docker-compose logs --no-color
-#
-## 2. Sortieren (basierend auf deinem Zeitstempel-Format)
-#$sortedLogs = $rawLogs | Sort-Object { 
-#    $idx = $_.IndexOf("["); 
-#    if($idx -ge 0) { $_.Substring($idx) } else { $_ } 
-#}
-#
-## 3. Absolut sicheres Schreiben in UTF-8 OHNE BOM
-## Das verhindert '├ä' (Ä) und '┬░' (°)
-#[System.IO.File]::WriteAllLines("$(Get-Location)\sorted_logs.txt", $sortedLogs, (New-Object System.Text.UTF8Encoding($false)))
-#
-#Write-Host "Fix angewendet: 'Identität' und '22.5°C' sollten jetzt korrekt sein." -ForegroundColor Cyan
+if ($sortedLogs) {
+    [System.IO.File]::WriteAllLines($outputPath, $sortedLogs, $utf8)
+    Write-Host "Done! Kontext-erhaltende Sortierung abgeschlossen." -ForegroundColor Green
+}

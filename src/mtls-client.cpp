@@ -1,3 +1,7 @@
+/**
+ * @file mtls-client.cpp
+ * @brief Implementierung des mTLS-Clients unter Nutzung von C++20 Coroutinen.
+ */
 #include <utility>
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
@@ -8,6 +12,13 @@ namespace asio = boost::asio;
 namespace ssl  = boost::asio::ssl;
 using tcp      = asio::ip::tcp;
 
+/**
+ * @brief Startet den mTLS-Client-Prozess.
+ * * Baut eine gesicherte Verbindung zum Server auf, führt den Handshake durch 
+ * und sendet verschlüsselte Sensordaten.
+ * * @param target_host Der DNS-Name des Zielservers (wichtig für den SAN-Check).
+ * @return asio::awaitable<void> Coroutine-Handle für die asynchrone Ausführung.
+ */
 asio::awaitable<void> run_mtls_client(std::string target_host) {
     auto executor = co_await asio::this_coro::executor;
     

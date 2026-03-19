@@ -9,6 +9,10 @@
 #include <windows.h>
 #endif
 
+/**
+ * @brief Einstiegspunkt des Programms.
+ * * Initialisiert den Boost.Asio I/O-Kontext und startet den Coroutine-Scheduler.
+ */
 int main(int argc, char* argv[]) {
     #ifdef _WIN32
     // Setzt die Konsole auf UTF-8 (Code Page 65001)

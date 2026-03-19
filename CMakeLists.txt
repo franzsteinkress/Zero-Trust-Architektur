@@ -1,3 +1,8 @@
+## @file CMakeLists.txt
+## @brief Build-Konfiguration für das C++20 Projekt.
+## @details Verknüpft Boost, OpenSSL und die Coroutinen-Bibliotheken. 
+## Aktiviert moderne C++20 Features und Compiler-Warnungen für maximale Code-Qualität.
+
 cmake_minimum_required(VERSION 3.20)
 project(ZeroTrustApp LANGUAGES CXX)
 

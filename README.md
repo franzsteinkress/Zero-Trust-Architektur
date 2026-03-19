@@ -1,8 +1,12 @@
 # 🛡️ Zero-Trust-Architektur: mTLS C++ Microservices
 
-![C++](https://img.shields.io/badge/C++-20-blue.svg?style=flat&logo=c%2B%2B) ![Docker](https://img.shields.io/badge/Docker-Enabled-blue?style=flat&logo=docker) ![VS Code](https://img.shields.io/badge/VS%20Code-DevContainers-007ACC?style=flat&logo=visual-studio-code) ![License](https://img.shields.io/badge/License-MIT-green.svg)
+![C++](https://img.shields.io/badge/C++-20-blue.svg?style=flat-square&logo=c%2B%2B) ![Docker](https://img.shields.io/badge/Docker-Enabled-blue?style=flat-square&logo=docker) ![VS Code](https://img.shields.io/badge/VS%20Code-DevContainers-007ACC?style=flat-square&logo=visual-studio-code) [![Documentation](https://img.shields.io/badge/docs-doxygen-blue?style=flat-square)](https://DEIN_USER.github.io/REPRO_NAME/) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+Dieses Projekt demonstriert eine hochsichere **Service-to-Service Kommunikation** in verteilten Systemen. Es wurde als technischer Proof-of-Concept für zwei zentrale Säulen moderner Softwareentwicklung entworfen:
 
-Dieses Projekt demonstriert eine hochsichere **Client-Server-Architektur** auf Basis von **Zero-Trust-Prinzipien**. Die Kommunikation erfolgt über gegenseitig authentifiziertes TLS (mTLS).
+1.  **Moderne Asynchronität:** Nutzung von **C++20 Coroutinen** in Verbindung mit **Boost.Asio**, um hocheffiziente, nicht-blockierende Netzwerkoperationen bei gleichzeitig lesbarem Code-Fluss zu ermöglichen.
+2.  **Sicherheit durch Design (DSA-Compliance):** Im Kontext des **Digital Services Act (DSA)** der EU rücken Sicherheit, Identitätsprüfung und der Schutz digitaler Infrastrukturen in den Fokus. Diese Implementierung nutzt **mTLS (Mutual TLS)**, um eine Zero-Trust-Umgebung zu schaffen, in der jeder Dienst seine Identität kryptographisch nachweisen muss.
+
+---
 
 ## 🚀 Features
 
@@ -107,6 +111,59 @@ Nutze `Strg + Shift + P` für folgende Aktionen:
 * **Verbindung abgelehnt:** Prüfen, ob Port **8443** frei ist.
 * **Docker-Host:** In Docker-Netzwerken immer den Servicenamen `zt_server` statt `localhost` verwenden.
 
+### 📚 Log-Aufbereitung & Analyse (PowerShell)
+
+In einer verteilten Architektur schreiben Client und Server ihre Logs gleichzeitig in den Docker-Stream. Um den exakten Ablauf des mTLS-Handshakes und der Datenübertragung nachzuvollziehen, bietet das Projekt ein intelligentes Analyse-Skript:
+
+* **Skript:** `sort_logs.ps1`
+* **Funktionen:**
+    * **Kernfunktion:** Liest Log-Dateien ein, extrahiert die Zeitstempel (ISO 8601) und gibt eine chronologisch sortierte Gesamtansicht aus.
+    * **Automatisierung:** Extrahiert die Logs direkt aus den laufenden Docker-Containern (kein manuelles Umleiten in Dateien nötig).
+    * **Kontext-Sortierung:** Erkennt zusammenhängende Blöcke (z. B. HTTP-Header oder Bestätigungstexte ohne eigenen Zeitstempel) und hält sie chronologisch bei ihrer Ursprungs-Nachricht.
+    * **Bereinigung:** Entfernt leere "Ghost-Logs" und System-Rauschen von Docker-Compose.
+    * **Encoding-Fix:** Erzwingt UTF-8 für eine fehlerfreie Darstellung von Umlauten (z. B. "Identität") in der Windows-Konsole.
+
+#### 🚀 Anwendung & Log-Analyse
+
+Um die mTLS-Kommunikation und den Handshake im Detail zu analysieren, muss das PowerShell-Skript ausgeführt werden, während die Logs in Docker noch verfügbar sind. Hierfür gibt es zwei bewährte Wege:
+
+**Option 1: Der "Post-Mortem" Weg (Standard)**
+Dieser Weg eignet sich, wenn du den gesamten Prozess von Start bis Ende (inkl. Shutdown) analysieren möchtest.
+1. Container starten: `docker-compose up`
+2. Interaktion abwarten (mTLS Handshake & Datentransfer).
+3. Container mit `Ctrl+C` beenden.
+4. Analyse-Skript ausführen:
+   ```powershell
+   ./sort_logs.ps1
+   ```
+5. (Optional) Ressourcen vollständig entfernen: `docker-compose down`
+
+**Option 2: Der "Detached Mode" (Live-Snapshot)**
+Ideal, wenn du die Logs analysieren willst, während die Server im Hintergrund weiterlaufen.
+1. Container im Hintergrund starten:
+   ```powershell
+   docker-compose up -d
+   ```
+2. Analyse-Skript jederzeit ausführen (erzeugt einen Snapshot der aktuellen Logs):
+   ```powershell
+   ./sort_logs.ps1
+   ```
+3. Nach Abschluss die Container manuell stoppen: `docker-compose stop` oder `docker-compose down`.
+
+---
+
+## 📖 Dokumentation (Doxygen)
+
+Der Code ist nach dem Doxygen-Standard kommentiert. Um die HTML-Dokumentation lokal zu generieren:
+
+1. Installiere Doxygen: `sudo apt install doxygen` (Linux) oder `choco install doxygen` (Windows).
+2. Führe im Root-Verzeichnis aus: `doxygen Doxyfile`
+3. Öffne `docs/html/index.html` im Browser.
+
+Die technische Referenz kann mit **Doxygen** lokal generiert werden:
+1. `doxygen Doxyfile`
+2. Öffne `html/index.html` im Browser.
+
 ---
 
 ## 📊 System-Architektur
@@ -115,8 +172,6 @@ Nutze `Strg + Shift + P` für folgende Aktionen:
 2. **Verifikation:** Validierung gegen die Root-CA.
 3. **Verschlüsselung:** Aufbau des gesicherten Tunnels.
 4. **Datentransfer:** Übertragung der binären Sensor-Payload.
-
----
 
 ### 🔄 Der mTLS Handshake-Prozess (Detail)
 
@@ -128,29 +183,6 @@ In einer Zero-Trust-Umgebung reicht es nicht, wenn der Client dem Server vertrau
 4.  **Client Certificate & Key Exchange:** Client sendet sein Zertifikat (`client_cert.pem`) und beweist den Besitz des privaten Schlüssels.
 5.  **Validation:** Beide Seiten prüfen die Signaturen gegen die gemeinsame `ca.pem`.
 6.  **Encrypted Channel:** Nach erfolgreicher beidseitiger Verifikation wird der symmetrische Sitzungsschlüssel für die AES-Verschlüsselung generiert.
-
----
-
-### 🗺️ Netzwerk-Topologie (Docker-Infrastruktur)
-
-Die Kommunikation findet innerhalb eines isolierten Docker-Netzwerks statt, um die Microservices von externen Einflüssen abzuschirmen.
-
-* **Service `zt_server`:** Fungiert als Policy Enforcement Point (PEP). Er lauscht auf Port `8443` und lehnt jede Verbindung ohne gültiges `client-app` Zertifikat sofort ab.
-* **Service `zt_client`:** Besitzt die Identität `client-app`. Er ist so konfiguriert, dass er nur dem Server vertraut, der ein von der `ZeroTrust Root CA` signiertes Zertifikat vorlegt.
-* **Isolierung:** Da beide Container im selben Docker-Netzwerk liegen, erfolgt die Auflösung über den internen DNS-Namen `zt_server`, was Hardcoded-IPs überflüssig macht.
-
----
-
-### 📝 Zusammenfassung der Sicherheitsgarantien
-
-| Schutz gegen... | Mechanismus | Status |
-| :--- | :--- | :--- |
-| **Eavesdropping** | TLS 1.3 Verschlüsselung | ✅ Aktiv |
-| **Impersonation** | Zertifikats-Validierung (mTLS) | ✅ Aktiv |
-| **Man-in-the-Middle** | Root-CA Trust-Chain & SAN Prüfung | ✅ Aktiv |
-| **Unauthorized Access** | Zero-Trust Identity Matching (CN) | ✅ Aktiv |
-
----
 
 ```mermaid
 sequenceDiagram
@@ -171,7 +203,38 @@ sequenceDiagram
     C->>S: Verschlüsselte Payload (AES-256 GCM)
     S-->>C: 200 OK (Identität bestätigt)
 ```
-    
+
+#### 🔐 Kryptographische Details
+Um eine maximale Sicherheit und Kompatibilität innerhalb des Docker-Netzwerks zu gewährleisten, nutzt die Implementierung folgende Standards:
+* **Subject Alternative Name (SAN):** Die Zertifikate sind auf die internen Docker-DNS-Namen (`zt_server`, `zt_client`) ausgestellt, um Hostname-Mismatches zu verhindern.
+* **Zertifikats-Workflow:** Vollautomatisierte Erstellung von **CSRs** (Certificate Signing Requests), die unmittelbar durch die lokale Root-CA signiert werden.
+* **Cipher Suites:** Fokus auf **TLS 1.3** mit sicherem Schlüsselaustausch (ECDHE) und authentifizierter Verschlüsselung (AES-GCM).
+
+#### 🏗️ Architektur-Prinzipien & Standards
+
+* **Identitätsmanagement:** Strikte **Authentifizierung via X.509-Zertifikaten**. Jeder Dienst weist seine Identität kryptographisch nach, bevor eine Kommunikation erlaubt wird.
+* **PKI (Public Key Infrastructure):** Eine integrierte, OpenSSL-basierte PKI verwaltet den gesamten Lebenszyklus der Zertifikate (Erstellung, Signierung durch Root-CA).
+* **Service-to-Service Security:** Das Projekt dient als Blueprint für sichere Kommunikation in **verteilten Systemen** oder **Kubernetes (K8s)** Umgebungen (ähnlich wie ein Service Mesh wie Istio oder Linkerd arbeitet).
+* **Interoperabilität:** Der Server ist standardkonform. Er kann nicht nur von unserem C++ Client, sondern auch via **curl** (unter Angabe der Zertifikatspfade) angesprochen werden.
+
+### 🗺️ Netzwerk-Topologie (Docker-Infrastruktur)
+
+Die Kommunikation findet innerhalb eines isolierten Docker-Netzwerks statt, um die Microservices von externen Einflüssen abzuschirmen.
+
+* **Service `zt_server`:** Fungiert als Policy Enforcement Point (PEP). Er lauscht auf Port `8443` und lehnt jede Verbindung ohne gültiges `client-app` Zertifikat sofort ab.
+* **Service `zt_client`:** Besitzt die Identität `client-app`. Er ist so konfiguriert, dass er nur dem Server vertraut, der ein von der `ZeroTrust Root CA` signiertes Zertifikat vorlegt.
+* **Isolierung:** Da beide Container im selben Docker-Netzwerk liegen, erfolgt die Auflösung über den internen DNS-Namen `zt_server`, was Hardcoded-IPs überflüssig macht.
+
+
+### 📝 Zusammenfassung der Sicherheitsgarantien
+
+| Schutz gegen... | Mechanismus | Status |
+| :--- | :--- | :--- |
+| **Eavesdropping** | TLS 1.3 Verschlüsselung | ✅ Aktiv |
+| **Impersonation** | Zertifikats-Validierung (mTLS) | ✅ Aktiv |
+| **Man-in-the-Middle** | Root-CA Trust-Chain & SAN Prüfung | ✅ Aktiv |
+| **Unauthorized Access** | Zero-Trust Identity Matching (CN) | ✅ Aktiv |
+
 ---
 
 ## 🤖 Automatisierung & CI/CD
@@ -208,7 +271,6 @@ Die nachfolgende Tabelle beschreibt die technischen Details der verwendeten Vers
 | **Key Usage** | Extended Key Auth | `serverAuth` (Server) / `clientAuth` (Client) |
 
 
-
 ### 🛡️ Zero-Trust Security Hinweis
 Obwohl die privaten Schlüssel (`.key`) im Image enthalten sind (um die Demonstration zu vereinfachen), folgt das Projekt dem **Zero-Trust-Paradigma**:
 1. **Verifizierung vor Kommunikation:** Kein Dienst vertraut dem anderen ohne gültiges Zertifikat.
@@ -217,7 +279,12 @@ Obwohl die privaten Schlüssel (`.key`) im Image enthalten sind (um die Demonstr
 
 ---
 
-*Erstellt für die mTLS Zero-Trust Demonstration 2026.*
+## 📄 Lizenz
+
+Dieses Projekt ist unter der **MIT-Lizenz** lizenziert. Siehe die [LICENSE](./LICENSE)-Datei für Details.
+
+*„Frei verwendbar für Ausbildung, Demonstration und als Basis für eigene Zero-Trust-Implementierungen.“*
 
 ---
+
 

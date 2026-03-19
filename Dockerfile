@@ -1,3 +1,8 @@
+## @file Dockerfile
+## @brief Build-Rezept für die mTLS-Komponenten.
+## @details Nutzt ein Multi-Stage-Build (Ubuntu 24.04), installiert Boost.Asio 
+## und OpenSSL 3.x. Optimiert für minimale Image-Größe und DSA-Sicherheitsvorgaben.
+
 # --- STAGE 1: Build & Cert Generation ---
 FROM debian:trixie AS builder
 RUN apt-get update && apt-get install -y \

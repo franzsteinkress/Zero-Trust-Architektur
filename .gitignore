@@ -32,3 +32,8 @@ raw_logs.txt
 # OS-spezifisch
 Thumbs.db
 .DS_Store
+
+# Doxygen output
+html/
+latex/
+doxygen_sqlite.db

@@ -1,3 +1,9 @@
+## @file generate_san_certs.sh
+## @brief PKI-Automatisierungsskript.
+## @details Generiert die Root-CA und erstellt X.509-Zertifikate mit 
+## Subject Alternative Names (SAN) für die Docker-DNS-Auflösung. 
+## Dies ist das Herzstück der Identitätsprüfung.
+
 #!/bin/bash
 # Verhindert Pfad-Konvertierungsfehler in MSYS2 (Windows)
 export MSYS_NO_PATHCONV=1

@@ -1,3 +1,9 @@
+## @file docker-compose.yml
+## @brief Orchestrierung der Zero-Trust-Umgebung.
+## @details Definiert die Services `zt_server` (mTLS-Endpunkt) und `zt_client` 
+## innerhalb eines isolierten Docker-Netzwerks. Stellt sicher, dass die 
+## Zertifikate via Volumes korrekt eingebunden werden.
+
 services:
   # Unser mTLS Server
   zt_server:

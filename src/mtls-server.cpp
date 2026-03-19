@@ -1,3 +1,7 @@
+/**
+ * @file mtls-server.cpp
+ * @brief Zero-Trust Server-Logik mit gegenseitiger Zertifikatsprüfung.
+ */
 #include <utility>
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
@@ -11,6 +15,12 @@ namespace asio = boost::asio;
 namespace ssl  = boost::asio::ssl;
 using tcp      = asio::ip::tcp;
 
+/**
+ * @brief Verwaltet eine einzelne verschlüsselte Client-Sitzung.
+ * * Implementiert die strikte Identitätsprüfung gemäß mTLS-Standard.
+ * @param stream Der aktive SSL/TLS-Datenstrom zum Client.
+ * @return asio::awaitable<void>
+ */
 asio::awaitable<void> handle_session(ssl::stream<tcp::socket> stream) {
     try {
         // 1. Handshake durchführen
@@ -48,6 +58,10 @@ asio::awaitable<void> handle_session(ssl::stream<tcp::socket> stream) {
     }
 }
 
+/**
+ * @brief Akzeptiert eingehende TCP-Verbindungen und initiiert die Sessions.
+ * @return asio::awaitable<void>
+ */
 asio::awaitable<void> listener() {
     auto executor = co_await asio::this_coro::executor;
     
