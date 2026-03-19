@@ -1,0 +1,17 @@
+<map id="main" name="main">
+<area shape="rect" id="Node000001" title="Einstiegspunkt des Programms." alt="" coords="5,84,60,109"/>
+<area shape="rect" id="Node000002" href="$mtls-server_8cpp.html#aff439b71112d7861a1445a503310dec5" title="Akzeptiert eingehende TCP&#45;Verbindungen und initiiert die Sessions." alt="" coords="134,84,205,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="60,94,120,94,120,99,60,99"/>
+<area shape="rect" id="Node000005" href="$shared_8hpp.html#a5fa5ba4c5377ad4cbc19f00b777691be" title="Thread&#45;sichere Logging&#45;Funktion mit Zeitstempel&#45;Generierung." alt="" coords="449,109,527,135"/>
+<area shape="poly" id="edge6_Node000001_Node000005" title=" " alt="" coords="59,107,119,134,204,163,252,173,302,179,352,178,401,170,431,157,458,141,461,145,434,162,402,175,353,184,302,184,252,178,203,168,117,139,57,112"/>
+<area shape="rect" id="Node000006" href="$mtls-client_8cpp.html#ac5bd90491f9cc7370b758977b5918907" title="Startet den mTLS&#45;Client&#45;Prozess." alt="" coords="108,33,231,59"/>
+<area shape="poly" id="edge7_Node000001_Node000006" title=" " alt="" coords="60,84,121,61,122,66,61,89"/>
+<area shape="rect" id="Node000003" href="$shared_8cpp.html#ab13eed262413c038f318cb3cf3091dfb" title="Ermittelt den absoluten Pfad zu den X.509&#45;Zertifikaten." alt="" coords="285,33,395,59"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="204,84,283,60,284,65,206,89"/>
+<area shape="rect" id="Node000004" href="$mtls-server_8cpp.html#a7ad103537184ed8192aa33adde485d2e" title="Verwaltet eine einzelne verschlüsselte Client&#45;Sitzung." alt="" coords="279,135,401,160"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="206,104,284,128,283,133,204,109"/>
+<area shape="poly" id="edge5_Node000002_Node000005" title=" " alt="" coords="205,97,436,115,435,120,205,102"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="401,134,435,128,436,133,402,139"/>
+<area shape="poly" id="edge8_Node000006_Node000003" title=" " alt="" coords="231,43,271,43,271,49,231,49"/>
+<area shape="poly" id="edge9_Node000006_Node000005" title=" " alt="" coords="199,31,241,17,293,6,348,4,376,9,403,18,427,34,447,54,476,96,472,99,443,57,423,38,400,23,375,14,348,10,293,11,242,22,201,36"/>
+</map>
