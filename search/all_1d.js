@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['📦_20github_20container_20registry_20ghcr_0',['📦 GitHub Container Registry (GHCR)',['../md_README.html#autotoc_md33',1,'']]]
+  ['📝_20zusammenfassung_20der_20sicherheitsgarantien_0',['📝 Zusammenfassung der Sicherheitsgarantien',['../md_README.html#autotoc_md29',1,'']]]
 ];

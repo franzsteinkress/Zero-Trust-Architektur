@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['📚_20log_20aufbereitung_20analyse_20powershell_0',['📚 Log-Aufbereitung &amp; Analyse (PowerShell)',['../md_README.html#autotoc_md19',1,'']]]
+  ['📖_20dokumentation_20doxygen_0',['📖 Dokumentation (Doxygen)',['../md_README.html#autotoc_md22',1,'']]]
 ];

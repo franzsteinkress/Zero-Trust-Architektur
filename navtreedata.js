@@ -57,7 +57,9 @@ var NAVTREE =
       [ "🔐 Kryptografische Spezifikationen", "md_README.html#autotoc_md35", [
         [ "🛡️ Zero-Trust Security Hinweis", "md_README.html#autotoc_md36", null ]
       ] ],
-      [ "📄 Lizenz", "md_README.html#autotoc_md38", null ]
+      [ "📄 Lizenz", "md_README.html#autotoc_md38", [
+        [ "Ein kleiner technischer Tipp vor dem Check-in:", "md_README.html#autotoc_md44", null ]
+      ] ]
     ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],

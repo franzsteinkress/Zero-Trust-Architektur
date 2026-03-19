@@ -226,6 +226,7 @@ Option B: Natives Testen (MSYS2 UCRT64)</h2>
 </div><!-- fragment --></li>
 <li>Nach Abschluss die Container manuell stoppen: <code>docker-compose stop</code> oder <code>docker-compose down</code>.</li>
 </ol>
+<p><b>📊 Ergebnis:</b> Das Skript generiert die Datei <code>sorted_logs.txt</code>. Darin ist die Kommunikation zwischen Client und Server chronologisch perfekt verzahnt, von "Ghost-Logs" bereinigt und in korrektem UTF-8-Encoding aufbereitet.</p>
 <hr  />
 <h1><a class="anchor" id="autotoc_md22"></a>
 📖 Dokumentation (Doxygen)</h1>
@@ -363,7 +364,34 @@ Option B: Natives Testen (MSYS2 UCRT64)</h2>
 <p>Dieses Projekt ist unter der <b>MIT-Lizenz</b> lizenziert. Siehe die <a href="./LICENSE">LICENSE</a>-Datei für Details.</p>
 <p><em>„Frei verwendbar für Ausbildung, Demonstration und als Basis für eigene Zero-Trust-Implementierungen.“</em></p>
 <hr  />
- </div></div><!-- contents -->
+<p>Hier ist die aufbereitete Fassung für deine <b><a class="el" href="README_8md.html">README.md</a></b>. Ich habe die Optionen klar strukturiert und die Befehle in Code-Blöcke gesetzt, damit Nutzer sie direkt kopieren können.</p>
+<hr  />
+<h3><a class="anchor" id="autotoc_md41"></a>
+🚀 Anwendung &amp; Log-Analyse</h3>
+<p>Um die mTLS-Kommunikation und den Handshake im Detail zu analysieren, muss das PowerShell-Skript ausgeführt werden, während die Logs in Docker noch verfügbar sind. Hierfür gibt es zwei bewährte Wege:</p>
+<p><b>Option 1: Der "Post-Mortem" Weg (Standard)</b> Dieser Weg eignet sich, wenn du den gesamten Prozess von Start bis Ende (inkl. Shutdown) analysieren möchtest.</p><ol type="1">
+<li>Container starten: <code>docker-compose up</code></li>
+<li>Interaktion abwarten (mTLS Handshake &amp; Datentransfer).</li>
+<li>Container mit <code>Ctrl+C</code> beenden.</li>
+<li>Analyse-Skript ausführen: <div class="fragment"><div class="line">./sort_logs.ps1</div>
+</div><!-- fragment --></li>
+<li>(Optional) Ressourcen vollständig entfernen: <code>docker-compose down</code></li>
+</ol>
+<p><b>Option 2: Der "Detached Mode" (Live-Snapshot)</b> Ideal, wenn du die Logs analysieren willst, während die Server im Hintergrund weiterlaufen.</p><ol type="1">
+<li>Container im Hintergrund starten: <div class="fragment"><div class="line">docker-compose up -d</div>
+</div><!-- fragment --></li>
+<li>Analyse-Skript jederzeit ausführen (erzeugt einen Snapshot der aktuellen Logs): <div class="fragment"><div class="line">./sort_logs.ps1</div>
+</div><!-- fragment --></li>
+<li>Nach Abschluss die Container manuell stoppen: <code>docker-compose stop</code> oder <code>docker-compose down</code>.</li>
+</ol>
+<hr  />
+<p><b>📊 Ergebnis:</b> Das Skript generiert die Datei <code>sorted_logs.txt</code>. Darin ist die Kommunikation zwischen Client und Server chronologisch perfekt verzahnt, von "Ghost-Logs" bereinigt und in korrektem UTF-8-Encoding aufbereitet.</p>
+<hr  />
+<h2><a class="anchor" id="autotoc_md44"></a>
+Ein kleiner technischer Tipp vor dem Check-in:</h2>
+<p>Falls du dich für <b>Option 1</b> entscheidest, achte darauf, dass du nach dem <code>Ctrl+C</code> kurz wartest, bis der PowerShell-Prompt wieder erscheint, bevor du das Skript startest. So stellst du sicher, dass Docker alle Log-Buffer auf die Festplatte geschrieben hat.</p>
+<p><b>Soll ich dir noch helfen, einen kurzen "Troubleshooting"-Abschnitt für die README zu schreiben, falls mal ein Port belegt ist oder Zertifikate fehlen?</b> </p>
+</div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->
 <!-- start footer part -->
