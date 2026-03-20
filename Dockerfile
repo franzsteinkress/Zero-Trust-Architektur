@@ -39,6 +39,7 @@ WORKDIR /app
 #ENTRYPOINT ["./mtls_app"]
 
 WORKDIR /app/bin
+ENV CERT_PATH=/app/bin/certs
 
 # Kopiere die fertige Binary für das Image
 COPY --from=builder /app/bin/mtls_app .
