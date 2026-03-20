@@ -28,13 +28,25 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Kopiere die fertige Binary DIREKT aus dem bin-Ordner der Stage 1
-COPY --from=builder /app/bin/mtls_app ./
+#COPY --from=builder /app/bin/mtls_app ./
 
 # Kopiere die generierten Zertifikate DIREKT aus dem certs-Ordner
-COPY --from=builder /app/bin/certs/*.pem ./
+#COPY --from=builder /app/bin/certs/*.pem ./
 
 # Ausführrechte sicherstellen
-RUN chmod +x ./mtls_app
+#RUN chmod +x ./mtls_app
 
-ENTRYPOINT ["./mtls_app"]
+#ENTRYPOINT ["./mtls_app"]
+
+# Kopiere die fertige Binary für das Image
+COPY --from=builder /app/bin/mtls_app ./bin/
+
+# Kopiere die generierten Zertifikate für das Image
+COPY --from=builder /app/bin/certs/ /app/bin/certs/
+
+# Ausführrechte sicherstellen
+RUN chmod +x /app/bin/mtls_app
+
+ENTRYPOINT ["/app/bin/mtls_app"]
+
 CMD ["server"]
