@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['📄_20lizenz_0',['📄 Lizenz',['../md_README.html#autotoc_md38',1,'']]]
+  ['📊_20system_20architektur_0',['📊 System-Architektur',['../md_README.html#autotoc_md24',1,'']]]
 ];
