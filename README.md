@@ -249,13 +249,20 @@ Das Projekt wurde um eine **vollautomatisierte Identitäts-Infrastruktur** erwei
 * **GitHub Actions:** Bei jedem `push` wird ein Docker-Image auf Basis von **Debian Trixie** gebaut. Die Zertifikate werden **während des Build-Prozesses im Container** generiert. Das fertige Image ist dadurch vollkommen autark ("Self-Contained").
 
 ### 📦 GitHub Container Registry (GHCR)
-Das stabile Image steht in der Registry zur Verfügung und kann ohne lokalen Quellcode getestet werden:
+Das stabile Image steht in der Registry zur Verfügung und kann plattformübergreifend ohne lokalen Quellcode getestet werden. Da Container standardmäßig isoliert sind, nutzt man ein gemeinsames Docker-Netzwerk für die Namensauflösung:
+
 ```bash
-# Image aus der Registry beziehen
+# 1. Image aus der Registry beziehen
 docker pull ghcr.io/franzsteinkress/zero-trust-architektur:latest
 
-# Server direkt aus dem Cloud-Image starten
-docker run -it --rm ghcr.io/franzsteinkress/zero-trust-architektur:latest server
+# 2. Gemeinsames Netzwerk erstellen (erforderlich für die Kommunikation)
+docker network create zta-net
+
+# 3. Server starten (erreichbar unter dem Namen 'mtls-server')
+docker run -it --rm --name mtls-server --network zta-net -p 8443:8443 ghcr.io/franzsteinkress/zero-trust-architektur:latest server
+
+# 4. Client starten (verbindet sich direkt mit dem Server-Container)
+docker run -it --rm --network zta-net ghcr.io/franzsteinkress/zero-trust-architektur:latest client mtls-server
 ```
 
 ---
