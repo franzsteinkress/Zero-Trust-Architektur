@@ -38,15 +38,17 @@ WORKDIR /app
 
 #ENTRYPOINT ["./mtls_app"]
 
+WORKDIR /app/bin
+
 # Kopiere die fertige Binary für das Image
-COPY --from=builder /app/bin/mtls_app ./bin/
+COPY --from=builder /app/bin/mtls_app .
 
 # Kopiere die generierten Zertifikate für das Image
-COPY --from=builder /app/bin/certs/ /app/bin/certs/
+COPY --from=builder /app/bin/certs/ ./certs/
 
 # Ausführrechte sicherstellen
-RUN chmod +x /app/bin/mtls_app
+RUN chmod +x ./mtls_app
 
-ENTRYPOINT ["/app/bin/mtls_app"]
+ENTRYPOINT ["./mtls_app"]
 
 CMD ["server"]
