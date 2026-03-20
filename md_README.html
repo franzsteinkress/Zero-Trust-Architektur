@@ -326,11 +326,18 @@ Option B: Natives Testen (MSYS2 UCRT64)</h2>
 </ul>
 <h2><a class="anchor" id="autotoc_md33"></a>
 📦 GitHub Container Registry (GHCR)</h2>
-<p>Das stabile Image steht in der Registry zur Verfügung und kann ohne lokalen Quellcode getestet werden: </p><div class="fragment"><div class="line"># Image aus der Registry beziehen</div>
+<p>Das stabile Image steht in der Registry zur Verfügung und kann plattformübergreifend ohne lokalen Quellcode getestet werden. Da Container standardmäßig isoliert sind, nutzt man ein gemeinsames Docker-Netzwerk für die Namensauflösung:</p>
+<div class="fragment"><div class="line"># 1. Image aus der Registry beziehen</div>
 <div class="line">docker pull ghcr.io/franzsteinkress/zero-trust-architektur:latest</div>
 <div class="line"> </div>
-<div class="line"># Server direkt aus dem Cloud-Image starten</div>
-<div class="line">docker run -it --rm ghcr.io/franzsteinkress/zero-trust-architektur:latest server</div>
+<div class="line"># 2. Gemeinsames Netzwerk erstellen (erforderlich für die Kommunikation)</div>
+<div class="line">docker network create zta-net</div>
+<div class="line"> </div>
+<div class="line"># 3. Server starten (erreichbar unter dem Namen &#39;mtls-server&#39;)</div>
+<div class="line">docker run -it --rm --name mtls-server --network zta-net -p 8443:8443 ghcr.io/franzsteinkress/zero-trust-architektur:latest server</div>
+<div class="line"> </div>
+<div class="line"># 4. Client starten (verbindet sich direkt mit dem Server-Container)</div>
+<div class="line">docker run -it --rm --network zta-net ghcr.io/franzsteinkress/zero-trust-architektur:latest client mtls-server</div>
 </div><!-- fragment --><hr  />
 <h1><a class="anchor" id="autotoc_md35"></a>
 🔐 Kryptografische Spezifikationen</h1>
